@@ -47,7 +47,7 @@ function handleDelete(id) {
 <template>
   <div class="w-full max-w-[1200px] mx-auto p-4 flex flex-col gap-8">
     <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 sm:gap-0 bg-shark-900/70 border border-shark-800/80 backdrop-blur-xl px-4 sm:px-6 py-5 rounded-2xl shadow-2xl">
-      <div class="flex items-center gap-4 w-full">
+      <div class="flex items-center gap-4 w-full sm:w-auto">
         <div class="w-12 h-12 rounded-full bg-linear-to-br from-aqua-500 to-aqua-700 flex justify-center items-center font-bold text-xl text-shark-950 shadow-lg shadow-aqua-500/10">
           {{ user.name.charAt(0) }}
         </div>
