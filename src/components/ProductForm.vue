@@ -35,7 +35,7 @@ const {
       </h3>
       
       <form @submit.prevent="handleSubmit" class="flex flex-col gap-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div class="flex flex-col gap-2">
             <label for="name" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Nombre </label>
             <input
@@ -102,7 +102,7 @@ const {
             />
           </div>
 
-          <div class="flex flex-col gap-2 md:col-span-2">
+          <div class="flex flex-col gap-2 sm:col-span-2">
             <label for="description" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Descripción</label>
             <input
               type="text"
@@ -113,7 +113,7 @@ const {
             />
           </div>
 
-          <div class="flex items-center gap-3 pt-4 md:pt-6">
+          <div class="flex items-center gap-3 pt-4 sm:pt-6 col-span-1 sm:col-span-2 lg:col-span-1">
             <label class="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -127,19 +127,19 @@ const {
           </div>
         </div>
 
-        <div class="flex gap-3 justify-end">
-          <button type="submit" class="bg-aqua-500 hover:bg-aqua-600 active:bg-aqua-700 text-shark-950 font-bold px-6 py-2.5 rounded-lg transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-lg shadow-aqua-500/10 hover:shadow-aqua-500/20">
-            <span class="icon-[ri--save-3-fill] w-5 h-5"></span>
-            {{ isEditing ? 'Actualizar' : 'Guardar' }}
-          </button>
+        <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end w-full">
           <button
             v-if="isEditing"
             type="button"
             @click="cancelEdit"
-            class="bg-shark-950/40 border border-shark-800 hover:bg-shark-800 text-white px-6 py-2.5 rounded-lg font-bold transition-all duration-200 cursor-pointer flex items-center gap-1"
+            class="w-full sm:w-auto justify-center bg-shark-950/40 border border-shark-800 hover:bg-shark-800 text-white px-6 py-2.5 rounded-lg font-bold transition-all duration-200 cursor-pointer flex items-center gap-1"
           >
             <span class="icon-[bx--x] w-5 h-5"></span>
             Cancelar
+          </button>
+          <button type="submit" class="w-full sm:w-auto justify-center bg-aqua-500 hover:bg-aqua-600 active:bg-aqua-700 text-shark-950 font-bold px-6 py-2.5 rounded-lg transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-lg shadow-aqua-500/10 hover:shadow-aqua-500/20">
+            <span class="icon-[ri--save-3-fill] w-5 h-5"></span>
+            {{ isEditing ? 'Actualizar' : 'Guardar' }}
           </button>
         </div>
       </form>

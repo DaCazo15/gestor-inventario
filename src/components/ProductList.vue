@@ -47,7 +47,8 @@ function handleDelete(id) {
         </div>
       </div>
 
-      <div class="overflow-x-auto rounded-xl border border-shark-800/80">
+      <!-- Vista de Escritorio (Tabla) -->
+      <div class="hidden md:block overflow-x-auto rounded-xl border border-shark-800/80">
         <table class="w-full border-collapse text-left">
           <thead>
             <tr>
@@ -105,6 +106,65 @@ function handleDelete(id) {
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Vista de Móvil (Tarjetas) -->
+      <div class="md:hidden flex flex-col gap-4">
+        <div
+          v-for="prod in filteredProducts"
+          :key="prod.id"
+          :class="['bg-shark-950/40 border border-shark-800 rounded-xl p-4 flex flex-col gap-4 transition-all duration-150', { 'bg-aqua-500/5 border-aqua-500/30': editingId === prod.id }]"
+        >
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-semibold text-aqua-500">ID: {{ prod.id }}</span>
+            <span :class="['inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border tracking-widest', 
+              prod.status ? 'bg-aqua-500/10 text-aqua-400 border-aqua-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+            ]">
+              {{ prod.statusStr || (prod.status ? 'ACTIVO' : 'INACTIVO') }}
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <div>
+              <h4 class="font-bold text-white text-base">{{ prod.name }}</h4>
+              <p v-if="prod.description" class="text-xs text-shark-400 mt-1">{{ prod.description }}</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3 pt-3 border-t border-shark-800/60 text-xs">
+              <div>
+                <span class="text-shark-400 block mb-0.5">Marca</span>
+                <span class="text-white font-semibold">{{ prod.marca }}</span>
+              </div>
+              <div>
+                <span class="text-shark-400 block mb-0.5">Encargado</span>
+                <span class="text-white font-semibold">{{ prod.encargado || '-' }}</span>
+              </div>
+              <div v-if="filterStatus === 'inactive'">
+                <span class="text-shark-400 block mb-0.5">Ingreso</span>
+                <span class="text-white font-semibold">{{ formatDateForDisplay(prod.fechaIngreso) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="userRole !== 'user'" class="flex gap-3 pt-3 border-t border-shark-800/60 justify-end">
+            <button @click="handleEdit(prod)" class="flex-1 justify-center bg-aqua-500/10 border border-aqua-500/30 text-aqua-400 hover:bg-aqua-500 hover:text-shark-950 text-xs font-bold px-3 py-2 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1.5">
+              <span class="icon-[bx--edit] w-4.5 h-4.5"></span>
+              Editar
+            </button>
+            <button
+              v-if="userRole === 'admin'"
+              @click="handleDelete(prod.id)"
+              class="flex-1 justify-center bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white text-xs font-bold px-3 py-2 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1.5"
+            >
+              <span class="icon-[bi--trash] w-4.5 h-4.5"></span>
+              Eliminar
+            </button>
+          </div>
+        </div>
+
+        <div v-if="filteredProducts.length === 0" class="text-center text-shark-400 py-8 bg-shark-950/20 border border-shark-800 rounded-xl">
+          No se encontraron equipos
+        </div>
       </div>
     </div>
   </section>
