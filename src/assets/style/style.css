@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+@plugin "@iconify/tailwind4";
+
+@theme {
+  --font-sans: 'Outfit', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --color-shark-600: #575757;
+  --color-shark-700: #434343;
+  --color-shark-800: #252525;
+  --color-shark-900: #1a1a1a;
+  --color-shark-950: #0a0a0a;
+
+  --color-aqua-500: #00dee2;
+  --color-aqua-600: #00b0b7;
+  --color-aqua-700: #008a91;
+  --color-aqua-800: #006b72;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-shark-950);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(0, 222, 226, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 176, 183, 0.05) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: #f3f4f6;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-shark-950);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-shark-800);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-shark-600);
+}
