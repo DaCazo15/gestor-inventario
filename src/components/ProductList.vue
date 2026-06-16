@@ -30,7 +30,7 @@ function handleDelete(id) {
           Lista de Equipos
         </h3>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
-          <div class="flex flex-wrap bg-shark-950/60 rounded-lg p-1 border border-shark-800">
+          <div class="flex bg-shark-950/60 rounded-lg p-1 border border-shark-800">
             <button @click="filterStatus = 'all'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'all' ? 'bg-shark-800 text-white' : 'text-shark-400 hover:text-shark-200']">Todos</button>
             <button @click="filterStatus = 'active'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'active' ? 'bg-aqua-500/20 text-aqua-400' : 'text-shark-400 hover:text-shark-200']">Activos</button>
             <button @click="filterStatus = 'inactive'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'inactive' ? 'bg-rose-500/20 text-rose-400' : 'text-shark-400 hover:text-shark-200']">Inactivos</button>
