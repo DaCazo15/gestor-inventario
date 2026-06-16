@@ -46,8 +46,8 @@ function handleDelete(id) {
 
 <template>
   <div class="w-full max-w-[1200px] mx-auto p-4 flex flex-col gap-8">
-    <header class="flex justify-between items-center bg-shark-900/70 border border-shark-800/80 backdrop-blur-xl px-6 py-5 rounded-2xl shadow-2xl">
-      <div class="flex items-center gap-4">
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 sm:gap-0 bg-shark-900/70 border border-shark-800/80 backdrop-blur-xl px-4 sm:px-6 py-5 rounded-2xl shadow-2xl">
+      <div class="flex items-center gap-4 w-full">
         <div class="w-12 h-12 rounded-full bg-linear-to-br from-aqua-500 to-aqua-700 flex justify-center items-center font-bold text-xl text-shark-950 shadow-lg shadow-aqua-500/10">
           {{ user.name.charAt(0) }}
         </div>
@@ -68,7 +68,7 @@ function handleDelete(id) {
           </div>
         </div>
       </div>
-      <button @click="$emit('logout')" class="bg-shark-950/40 border border-shark-800 hover:bg-rose-500/15 hover:border-rose-500 hover:text-rose-200 text-shark-200 px-4.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5">
+      <button @click="$emit('logout')" class="w-full sm:w-auto justify-center bg-shark-950/40 border border-shark-800 hover:bg-rose-500/15 hover:border-rose-500 hover:text-rose-200 text-shark-200 px-4.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5">
         <span class="icon-[ri--logout-box-r-line] w-4.5 h-4.5"></span>
         Cerrar Sesión
       </button>

@@ -29,13 +29,13 @@ function handleDelete(id) {
           <span class="icon-[ri--list-settings-line] w-5 h-5 text-aqua-500"></span>
           Lista de Equipos
         </h3>
-        <div class="flex flex-col md:flex-row items-center gap-4">
-          <div class="flex bg-shark-950/60 rounded-lg p-1 border border-shark-800">
-            <button @click="filterStatus = 'all'" :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'all' ? 'bg-shark-800 text-white' : 'text-shark-400 hover:text-shark-200']">Todos</button>
-            <button @click="filterStatus = 'active'" :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'active' ? 'bg-aqua-500/20 text-aqua-400' : 'text-shark-400 hover:text-shark-200']">Activos</button>
-            <button @click="filterStatus = 'inactive'" :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'inactive' ? 'bg-rose-500/20 text-rose-400' : 'text-shark-400 hover:text-shark-200']">Inactivos</button>
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
+          <div class="flex flex-wrap bg-shark-950/60 rounded-lg p-1 border border-shark-800">
+            <button @click="filterStatus = 'all'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'all' ? 'bg-shark-800 text-white' : 'text-shark-400 hover:text-shark-200']">Todos</button>
+            <button @click="filterStatus = 'active'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'active' ? 'bg-aqua-500/20 text-aqua-400' : 'text-shark-400 hover:text-shark-200']">Activos</button>
+            <button @click="filterStatus = 'inactive'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'inactive' ? 'bg-rose-500/20 text-rose-400' : 'text-shark-400 hover:text-shark-200']">Inactivos</button>
           </div>
-          <div class="relative w-full max-w-xs">
+          <div class="relative w-full sm:max-w-xs">
             <span class="icon-[bi--search] w-4 h-4 text-shark-400 absolute left-3.5 top-3"></span>
             <input
               type="text"

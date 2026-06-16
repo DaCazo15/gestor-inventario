@@ -32,8 +32,8 @@ function handleSubmit() {
 </script>
 
 <template>
-  <div class="flex justify-between items-center min-h-screen w-full gap-10">
-    <div class="bg-shark-900/70 border border-shark-800/80 backdrop-blur-xl rounded-2xl p-8 w-full transition-all duration-300">
+  <div class="flex flex-col lg:flex-row justify-center lg:justify-between items-center min-h-screen w-full gap-8 lg:gap-10 p-4 lg:p-0">
+    <div class="bg-shark-900/70 border border-shark-800/80 backdrop-blur-xl rounded-2xl p-6 lg:p-8 w-full max-w-md lg:max-w-none transition-all duration-300">
       <div class="text-center mb-8 flex flex-col items-center">
         <img src="../assets/ico/ico.png" alt="tools" class="w-12 h-12 mb-3">
         <h2 class="text-2xl font-bold text-white mb-1">Iniciar Sesión</h2>
@@ -97,7 +97,7 @@ function handleSubmit() {
         </div>
       </div>
     </div>
-    <div class="w-[850px] h-[850px] flex items-center justify-center">
+    <div class="hidden lg:flex w-full lg:w-[850px] h-auto lg:h-[850px] items-center justify-center">
       <img 
         src="../assets/img/tecnico.avif" 
         alt="tecnico"
