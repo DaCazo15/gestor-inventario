@@ -1,78 +1,78 @@
 import { ref } from 'vue'
-import { userService } from '../services/userService'
+import { servicioUsuario } from '../services/userService'
 
-const FALLBACK_USERS = [
+const USUARIOS_FALLBACK = [
   { email: 'admin@test.com', pass: 'admin123', role: 'admin', name: 'Administrador' },
   { email: 'emp@test.com', pass: 'emp123', role: 'empleado', name: 'Empleado de Turno' },
   { email: 'user@test.com', pass: 'user123', role: 'user', name: 'Cliente Invitado' }
 ]
 
 export function useAuth() {
-  const currentUser = ref(null)
-  const isAuthLoading = ref(false)
+  const usuarioActual = ref(null)
+  const cargandoAuth = ref(false)
 
-  function initializeAuth() {
-    const savedUser = sessionStorage.getItem('currentUser')
-    if (savedUser) {
-      currentUser.value = JSON.parse(savedUser)
+  function inicializarAuth() {
+    const usuarioGuardado = sessionStorage.getItem('usuarioActual')
+    if (usuarioGuardado) {
+      usuarioActual.value = JSON.parse(usuarioGuardado)
     }
-    return !!savedUser
+    return !!usuarioGuardado
   }
 
-  async function handleLogin({ email, password }) {
-    isAuthLoading.value = true
+  async function manejarLogin({ email, password }) {
+    cargandoAuth.value = true
     try {
-      let apiUsers = []
+      let usuariosApi = []
       try {
-        apiUsers = await userService.getUsers()
-      } catch (apiErr) {
-        console.warn('Could not fetch users from API, using fallback list', apiErr)
+        usuariosApi = await servicioUsuario.obtenerUsuarios()
+      } catch (errorApi) {
+        console.warn('No se pudo obtener usuarios de la API, usando lista de respaldo', errorApi)
       }
 
-      const matchedApiUser = apiUsers.find(u => 
+      const usuarioEncontradoApi = usuariosApi.find(u =>
         (u.email === email || u.user === email) && u.password === password
       )
 
-      let success = false
-      if (matchedApiUser) {
-        const sessionUser = {
-          name: matchedApiUser.fullName || matchedApiUser.user || 'Usuario API',
-          role: matchedApiUser.rol || 'user',
-          email: matchedApiUser.email
+      let exitoso = false
+      if (usuarioEncontradoApi) {
+        const sesionUsuario = {
+          name: usuarioEncontradoApi.fullName || usuarioEncontradoApi.user || 'Usuario API',
+          role: usuarioEncontradoApi.rol || 'user',
+          email: usuarioEncontradoApi.email
         }
-        currentUser.value = sessionUser
-        sessionStorage.setItem('currentUser', JSON.stringify(sessionUser))
-        success = true
+        usuarioActual.value = sesionUsuario
+        sessionStorage.setItem('usuarioActual', JSON.stringify(sesionUsuario))
+        exitoso = true
       } else {
-        const matchedFallbackUser = FALLBACK_USERS.find(u => u.email === email && u.pass === password)
-        if (matchedFallbackUser) {
-          currentUser.value = matchedFallbackUser
-          sessionStorage.setItem('currentUser', JSON.stringify(matchedFallbackUser))
-          success = true
+        const usuarioFallback = USUARIOS_FALLBACK.find(u => u.email === email && u.pass === password)
+        if (usuarioFallback) {
+          usuarioActual.value = usuarioFallback
+          sessionStorage.setItem('usuarioActual', JSON.stringify(usuarioFallback))
+          exitoso = true
         } else {
           alert('Credenciales incorrectas. Intente nuevamente.')
         }
       }
-      return success
-    } catch (err) {
-      console.error('Login error:', err)
+      return exitoso
+    } catch (error) {
+      console.error('Error en el inicio de sesión:', error)
       alert('Error durante el inicio de sesión. Por favor, intente nuevamente.')
       return false
     } finally {
-      isAuthLoading.value = false
+      cargandoAuth.value = false
     }
   }
 
-  function handleLogout() {
-    currentUser.value = null
-    sessionStorage.removeItem('currentUser')
+  function manejarLogout() {
+    usuarioActual.value = null
+    sessionStorage.removeItem('usuarioActual')
   }
 
   return {
-    currentUser,
-    isAuthLoading,
-    initializeAuth,
-    handleLogin,
-    handleLogout
+    usuarioActual,
+    cargandoAuth,
+    inicializarAuth,
+    manejarLogin,
+    manejarLogout
   }
 }

@@ -1,110 +1,110 @@
 import { ref, computed, watch } from 'vue'
-import { formatDateForInput } from '../helpers/dateFormatter'
+import { formatearFechaParaInput } from '../helpers/dateFormatter'
 
 export function useProductForm(props, emit) {
-  const isEditing = computed(() => !!props.editingProduct)
-  
-  const name = ref('')
+  const estaEditando = computed(() => !!props.editingProduct)
+
+  const nombre = ref('')
   const marca = ref('')
-  const description = ref('')
+  const descripcion = ref('')
   const encargado = ref('')
   const notificante = ref('')
-  const status = ref(true)
-  const statusStr = ref('Activo')
+  const estado = ref(true)
+  const estadoTexto = ref('Activo')
   const fechaIngreso = ref('')
   const fechaEgreso = ref('')
 
-  watch(() => props.editingProduct, (newVal) => {
-    if (newVal) {
-      name.value = newVal.name || ''
-      marca.value = newVal.marca || ''
-      description.value = newVal.description || ''
-      encargado.value = newVal.encargado || ''
-      notificante.value = newVal.notificante || ''
-      status.value = newVal.status !== undefined ? newVal.status : true
-      statusStr.value = newVal.statusStr || (status.value ? 'Activo' : 'Inactivo')
-      fechaIngreso.value = formatDateForInput(newVal.fechaIngreso)
-      fechaEgreso.value = formatDateForInput(newVal.fechaEgreso)
+  watch(() => props.editingProduct, (nuevoValor) => {
+    if (nuevoValor) {
+      nombre.value = nuevoValor.name || ''
+      marca.value = nuevoValor.marca || ''
+      descripcion.value = nuevoValor.description || ''
+      encargado.value = nuevoValor.encargado || ''
+      notificante.value = nuevoValor.notificante || ''
+      estado.value = nuevoValor.status !== undefined ? nuevoValor.status : true
+      estadoTexto.value = nuevoValor.statusStr || (estado.value ? 'Activo' : 'Inactivo')
+      fechaIngreso.value = formatearFechaParaInput(nuevoValor.fechaIngreso)
+      fechaEgreso.value = formatearFechaParaInput(nuevoValor.fechaEgreso)
     } else {
-      resetForm()
+      reiniciarFormulario()
     }
   }, { immediate: true })
 
-  watch(fechaEgreso, (newVal) => {
-    if (newVal) {
-      status.value = false
-      statusStr.value = 'Inactivo'
+  watch(fechaEgreso, (nuevoValor) => {
+    if (nuevoValor) {
+      estado.value = false
+      estadoTexto.value = 'Inactivo'
     } else {
-      status.value = true
-      statusStr.value = 'Activo'
+      estado.value = true
+      estadoTexto.value = 'Activo'
     }
   })
 
-  function handleStatusChange() {
-    statusStr.value = status.value ? 'Activo' : 'Inactivo'
-    if (!status.value && !fechaEgreso.value) {
+  function manejarCambioEstado() {
+    estadoTexto.value = estado.value ? 'Activo' : 'Inactivo'
+    if (!estado.value && !fechaEgreso.value) {
       fechaEgreso.value = new Date().toISOString().split('T')[0]
-    } else if (status.value && fechaEgreso.value) {
+    } else if (estado.value && fechaEgreso.value) {
       fechaEgreso.value = ''
     }
   }
 
-  function resetForm() {
-    name.value = ''
+  function reiniciarFormulario() {
+    nombre.value = ''
     marca.value = ''
-    description.value = ''
+    descripcion.value = ''
     encargado.value = ''
     notificante.value = ''
-    status.value = true
-    statusStr.value = 'Activo'
+    estado.value = true
+    estadoTexto.value = 'Activo'
     fechaIngreso.value = ''
     fechaEgreso.value = ''
   }
 
-  function handleSubmit() {
-    const submitData = {
-      name: name.value.trim(),
+  function manejarEnvio() {
+    const datosEnvio = {
+      name: nombre.value.trim(),
       marca: marca.value.trim(),
-      description: description.value.trim(),
+      description: descripcion.value.trim(),
       encargado: encargado.value.trim(),
       notificante: notificante.value.trim(),
-      status: status.value,
-      statusStr: statusStr.value,
+      status: estado.value,
+      statusStr: estadoTexto.value,
       fechaIngreso: fechaIngreso.value ? new Date(fechaIngreso.value).toISOString() : null,
       fechaEgreso: fechaEgreso.value ? new Date(fechaEgreso.value).toISOString() : null
     }
 
-    if (!submitData.name || !submitData.marca) {
+    if (!datosEnvio.name || !datosEnvio.marca) {
       alert('Por favor complete los campos obligatorios (Nombre y Marca).')
       return
     }
 
-    if (!isEditing.value && props.userRole === 'empleado' && props.existingProducts.some(p => p.name?.toLowerCase() === submitData.name.toLowerCase())) {
+    if (!estaEditando.value && props.userRole === 'empleado' && props.existingProducts.some(p => p.name?.toLowerCase() === datosEnvio.name.toLowerCase())) {
       alert('Como empleado no está autorizado a duplicar o crear nuevos productos sin un ID único nuevo.')
       return
     }
 
-    emit('save', submitData, isEditing.value, props.editingProduct?.id)
+    emit('save', datosEnvio, estaEditando.value, props.editingProduct?.id)
   }
 
-  function cancelEdit() {
-    resetForm()
+  function cancelarEdicion() {
+    reiniciarFormulario()
     emit('cancel')
   }
 
   return {
-    isEditing,
-    name,
+    estaEditando,
+    nombre,
     marca,
-    description,
+    descripcion,
     encargado,
     notificante,
-    status,
-    statusStr,
+    estado,
+    estadoTexto,
     fechaIngreso,
     fechaEgreso,
-    handleStatusChange,
-    handleSubmit,
-    cancelEdit
+    manejarCambioEstado,
+    manejarEnvio,
+    cancelarEdicion
   }
 }

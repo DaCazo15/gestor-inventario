@@ -1,68 +1,68 @@
 import { ref } from 'vue'
-import { equipoService } from '../services/equipoService'
+import { servicioEquipo } from '../services/equipoService'
 
 export function useProducts() {
-  const products = ref([])
-  const isProductsLoading = ref(false)
+  const equipos = ref([])
+  const cargandoEquipos = ref(false)
 
-  async function fetchEquipos() {
-    isProductsLoading.value = true
+  async function obtenerEquipos() {
+    cargandoEquipos.value = true
     try {
-      const data = await equipoService.getEquipos()
-      products.value = data
-    } catch (err) {
-      console.error('Error fetching equipos:', err)
+      const datos = await servicioEquipo.obtenerEquipos()
+      equipos.value = datos
+    } catch (error) {
+      console.error('Error al obtener equipos:', error)
     } finally {
-      isProductsLoading.value = false
+      cargandoEquipos.value = false
     }
   }
 
-  async function addProduct(submitData) {
-    isProductsLoading.value = true
+  async function agregarEquipo(datosEnvio) {
+    cargandoEquipos.value = true
     try {
-      await equipoService.createEquipo(submitData)
-      await fetchEquipos()
-    } catch (err) {
-      console.error('Error adding equipo:', err)
+      await servicioEquipo.crearEquipo(datosEnvio)
+      await obtenerEquipos()
+    } catch (error) {
+      console.error('Error al agregar equipo:', error)
       alert('No se pudo agregar el equipo.')
     } finally {
-      isProductsLoading.value = false
+      cargandoEquipos.value = false
     }
   }
 
-  async function updateProduct(submitData) {
-    isProductsLoading.value = true
+  async function actualizarEquipo(datosEnvio) {
+    cargandoEquipos.value = true
     try {
-      const { id, ...data } = submitData
-      await equipoService.updateEquipo(id, data)
-      await fetchEquipos()
-    } catch (err) {
-      console.error('Error updating equipo:', err)
+      const { id, ...datos } = datosEnvio
+      await servicioEquipo.actualizarEquipo(id, datos)
+      await obtenerEquipos()
+    } catch (error) {
+      console.error('Error al actualizar equipo:', error)
       alert('No se pudo actualizar el equipo.')
     } finally {
-      isProductsLoading.value = false
+      cargandoEquipos.value = false
     }
   }
 
-  async function deleteProduct(id) {
-    isProductsLoading.value = true
+  async function eliminarEquipo(id) {
+    cargandoEquipos.value = true
     try {
-      await equipoService.deleteEquipo(id)
-      await fetchEquipos()
-    } catch (err) {
-      console.error('Error deleting equipo:', err)
+      await servicioEquipo.eliminarEquipo(id)
+      await obtenerEquipos()
+    } catch (error) {
+      console.error('Error al eliminar equipo:', error)
       alert('No se pudo eliminar el equipo.')
     } finally {
-      isProductsLoading.value = false
+      cargandoEquipos.value = false
     }
   }
 
   return {
-    products,
-    isProductsLoading,
-    fetchEquipos,
-    addProduct,
-    updateProduct,
-    deleteProduct
+    equipos,
+    cargandoEquipos,
+    obtenerEquipos,
+    agregarEquipo,
+    actualizarEquipo,
+    eliminarEquipo
   }
 }

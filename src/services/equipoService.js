@@ -1,8 +1,8 @@
 import { api } from './api'
 
-export const equipoService = {
-  getEquipos: () => api.get('/equipo'),
-  createEquipo: (data) => api.post('/equipo', data),
-  updateEquipo: (id, data) => api.put(`/equipo/${id}`, data),
-  deleteEquipo: (id) => api.delete(`/equipo/${id}`)
+export const servicioEquipo = {
+  obtenerEquipos: () => api.obtener('/equipo'),
+  crearEquipo: (datos) => api.crear('/equipo', datos),
+  actualizarEquipo: (id, datos) => api.actualizar(`/equipo/${id}`, datos),
+  eliminarEquipo: (id) => api.eliminar(`/equipo/${id}`)
 }

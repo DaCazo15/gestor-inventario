@@ -1,6 +1,6 @@
 <script setup>
 import { useProductFilter } from '../composables/useProductFilter'
-import { formatDateForDisplay } from '../helpers/dateFormatter'
+import { formatearFechaParaMostrar } from '../helpers/dateFormatter'
 
 const props = defineProps({
   userRole: { type: String, required: true },
@@ -10,13 +10,13 @@ const props = defineProps({
 
 const emit = defineEmits(['edit', 'delete'])
 
-const { searchQuery, filterStatus, filteredProducts } = useProductFilter(props)
+const { busqueda, filtroEstado, equiposFiltrados } = useProductFilter(props)
 
-function handleEdit(product) {
-  emit('edit', product)
+function manejarEdicion(equipo) {
+  emit('edit', equipo)
 }
 
-function handleDelete(id) {
+function manejarEliminacion(id) {
   emit('delete', id)
 }
 </script>
@@ -31,15 +31,15 @@ function handleDelete(id) {
         </h3>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
           <div class="flex bg-shark-950/60 rounded-lg p-1 border border-shark-800">
-            <button @click="filterStatus = 'all'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'all' ? 'bg-shark-800 text-white' : 'text-shark-400 hover:text-shark-200']">Todos</button>
-            <button @click="filterStatus = 'active'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'active' ? 'bg-aqua-500/20 text-aqua-400' : 'text-shark-400 hover:text-shark-200']">Activos</button>
-            <button @click="filterStatus = 'inactive'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filterStatus === 'inactive' ? 'bg-rose-500/20 text-rose-400' : 'text-shark-400 hover:text-shark-200']">Inactivos</button>
+            <button @click="filtroEstado = 'all'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filtroEstado === 'all' ? 'bg-shark-800 text-white' : 'text-shark-400 hover:text-shark-200']">Todos</button>
+            <button @click="filtroEstado = 'active'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filtroEstado === 'active' ? 'bg-aqua-500/20 text-aqua-400' : 'text-shark-400 hover:text-shark-200']">Activos</button>
+            <button @click="filtroEstado = 'inactive'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filtroEstado === 'inactive' ? 'bg-rose-500/20 text-rose-400' : 'text-shark-400 hover:text-shark-200']">Inactivos</button>
           </div>
           <div class="relative w-full sm:max-w-xs">
             <span class="icon-[bi--search] w-4 h-4 text-shark-400 absolute left-3.5 top-3"></span>
             <input
               type="text"
-              v-model="searchQuery"
+              v-model="busqueda"
               placeholder="Buscar por nombre o marca..."
               class="w-full bg-shark-950/60 border border-shark-800 rounded-lg pl-10 pr-4 py-2 text-sm text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 transition-all duration-200"
             />
@@ -57,45 +57,45 @@ function handleDelete(id) {
               <th class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Marca</th>
               <th class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Encargado</th>
               <th class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Estado</th>
-              <th v-if="filterStatus === 'inactive'" class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Ingreso</th>
+              <th v-if="filtroEstado === 'inactive'" class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Ingreso</th>
               <th v-if="userRole !== 'user'" class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80 text-right">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-if="filteredProducts.length === 0">
+            <tr v-if="equiposFiltrados.length === 0">
               <td :colspan="userRole !== 'user' ? 7 : 6" class="text-center text-shark-400 py-10 px-5 border-b border-shark-800/60">
                 No se encontraron equipos
               </td>
             </tr>
             <tr
-              v-for="prod in filteredProducts"
-              :key="prod.id"
-              :class="['border-b border-shark-800/60 hover:bg-shark-950/20 transition-all duration-150', { 'bg-aqua-500/5': editingId === prod.id }]"
+              v-for="equipo in equiposFiltrados"
+              :key="equipo.id"
+              :class="['border-b border-shark-800/60 hover:bg-shark-950/20 transition-all duration-150', { 'bg-aqua-500/5': editingId === equipo.id }]"
             >
-              <td class="px-5 py-4 text-sm font-semibold text-aqua-500 w-[80px]">{{ prod.id }}</td>
+              <td class="px-5 py-4 text-sm font-semibold text-aqua-500 w-[80px]">{{ equipo.id }}</td>
               <td class="px-5 py-4 text-sm">
-                <div class="font-bold text-white">{{ prod.name }}</div>
-                <div v-if="prod.description" class="text-xs text-shark-400 mt-1 max-w-[280px] truncate">{{ prod.description }}</div>
+                <div class="font-bold text-white">{{ equipo.name }}</div>
+                <div v-if="equipo.description" class="text-xs text-shark-400 mt-1 max-w-[280px] truncate">{{ equipo.description }}</div>
               </td>
-              <td class="px-5 py-4 text-sm text-shark-200">{{ prod.marca }}</td>
-              <td class="px-5 py-4 text-sm text-shark-200">{{ prod.encargado || '-' }}</td>
+              <td class="px-5 py-4 text-sm text-shark-200">{{ equipo.marca }}</td>
+              <td class="px-5 py-4 text-sm text-shark-200">{{ equipo.encargado || '-' }}</td>
               <td class="px-5 py-4 text-sm">
                 <span :class="['inline-block text-xs font-semibold px-2.5 py-1 rounded-md border', 
-                  prod.status ? 'bg-aqua-500/10 text-aqua-400 border-aqua-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                  equipo.status ? 'bg-aqua-500/10 text-aqua-400 border-aqua-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
                 ]">
-                  {{ prod.statusStr || (prod.status ? 'Activo' : 'Inactivo') }}
+                  {{ equipo.statusStr || (equipo.status ? 'Activo' : 'Inactivo') }}
                 </span>
               </td>
-              <td v-if="filterStatus === 'inactive'" class="px-5 py-4 text-sm text-shark-200">{{formatDateForDisplay(prod.fechaIngreso)}}</td>
+              <td v-if="filtroEstado === 'inactive'" class="px-5 py-4 text-sm text-shark-200">{{ formatearFechaParaMostrar(equipo.fechaIngreso) }}</td>
               <td v-if="userRole !== 'user'" class="px-5 py-4 text-sm text-right w-[180px]">
                 <div class="flex gap-2 justify-end">
-                  <button @click="handleEdit(prod)" class="bg-aqua-500/10 border border-aqua-500/30 text-aqua-400 hover:bg-aqua-500 hover:text-shark-950 text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1">
+                  <button @click="manejarEdicion(equipo)" class="bg-aqua-500/10 border border-aqua-500/30 text-aqua-400 hover:bg-aqua-500 hover:text-shark-950 text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1">
                     <span class="icon-[bx--edit] w-4.5 h-4.5"></span>
                     Editar
                   </button>
                   <button
                     v-if="userRole === 'admin'"
-                    @click="handleDelete(prod.id)"
+                    @click="manejarEliminacion(equipo.id)"
                     class="bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1"
                   >
                     <span class="icon-[bi--trash] w-4.5 h-4.5"></span>
@@ -111,49 +111,49 @@ function handleDelete(id) {
       <!-- Vista de Móvil (Tarjetas) -->
       <div class="md:hidden flex flex-col gap-4">
         <div
-          v-for="prod in filteredProducts"
-          :key="prod.id"
-          :class="['bg-shark-950/40 border border-shark-800 rounded-xl p-4 flex flex-col gap-4 transition-all duration-150', { 'bg-aqua-500/5 border-aqua-500/30': editingId === prod.id }]"
+          v-for="equipo in equiposFiltrados"
+          :key="equipo.id"
+          :class="['bg-shark-950/40 border border-shark-800 rounded-xl p-4 flex flex-col gap-4 transition-all duration-150', { 'bg-aqua-500/5 border-aqua-500/30': editingId === equipo.id }]"
         >
           <div class="flex justify-between items-center">
-            <span class="text-xs font-semibold text-aqua-500">ID: {{ prod.id }}</span>
+            <span class="text-xs font-semibold text-aqua-500">ID: {{ equipo.id }}</span>
             <span :class="['inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border tracking-widest', 
-              prod.status ? 'bg-aqua-500/10 text-aqua-400 border-aqua-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+              equipo.status ? 'bg-aqua-500/10 text-aqua-400 border-aqua-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
             ]">
-              {{ prod.statusStr || (prod.status ? 'ACTIVO' : 'INACTIVO') }}
+              {{ equipo.statusStr || (equipo.status ? 'ACTIVO' : 'INACTIVO') }}
             </span>
           </div>
 
           <div class="flex flex-col gap-2">
             <div>
-              <h4 class="font-bold text-white text-base">{{ prod.name }}</h4>
-              <p v-if="prod.description" class="text-xs text-shark-400 mt-1">{{ prod.description }}</p>
+              <h4 class="font-bold text-white text-base">{{ equipo.name }}</h4>
+              <p v-if="equipo.description" class="text-xs text-shark-400 mt-1">{{ equipo.description }}</p>
             </div>
             
             <div class="grid grid-cols-2 gap-3 pt-3 border-t border-shark-800/60 text-xs">
               <div>
                 <span class="text-shark-400 block mb-0.5">Marca</span>
-                <span class="text-white font-semibold">{{ prod.marca }}</span>
+                <span class="text-white font-semibold">{{ equipo.marca }}</span>
               </div>
               <div>
                 <span class="text-shark-400 block mb-0.5">Encargado</span>
-                <span class="text-white font-semibold">{{ prod.encargado || '-' }}</span>
+                <span class="text-white font-semibold">{{ equipo.encargado || '-' }}</span>
               </div>
-              <div v-if="filterStatus === 'inactive'">
+              <div v-if="filtroEstado === 'inactive'">
                 <span class="text-shark-400 block mb-0.5">Ingreso</span>
-                <span class="text-white font-semibold">{{ formatDateForDisplay(prod.fechaIngreso) }}</span>
+                <span class="text-white font-semibold">{{ formatearFechaParaMostrar(equipo.fechaIngreso) }}</span>
               </div>
             </div>
           </div>
 
           <div v-if="userRole !== 'user'" class="flex gap-3 pt-3 border-t border-shark-800/60 justify-end">
-            <button @click="handleEdit(prod)" class="flex-1 justify-center bg-aqua-500/10 border border-aqua-500/30 text-aqua-400 hover:bg-aqua-500 hover:text-shark-950 text-xs font-bold px-3 py-2 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1.5">
+            <button @click="manejarEdicion(equipo)" class="flex-1 justify-center bg-aqua-500/10 border border-aqua-500/30 text-aqua-400 hover:bg-aqua-500 hover:text-shark-950 text-xs font-bold px-3 py-2 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1.5">
               <span class="icon-[bx--edit] w-4.5 h-4.5"></span>
               Editar
             </button>
             <button
               v-if="userRole === 'admin'"
-              @click="handleDelete(prod.id)"
+              @click="manejarEliminacion(equipo.id)"
               class="flex-1 justify-center bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white text-xs font-bold px-3 py-2 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1.5"
             >
               <span class="icon-[bi--trash] w-4.5 h-4.5"></span>
@@ -162,7 +162,7 @@ function handleDelete(id) {
           </div>
         </div>
 
-        <div v-if="filteredProducts.length === 0" class="text-center text-shark-400 py-8 bg-shark-950/20 border border-shark-800 rounded-xl">
+        <div v-if="equiposFiltrados.length === 0" class="text-center text-shark-400 py-8 bg-shark-950/20 border border-shark-800 rounded-xl">
           No se encontraron equipos
         </div>
       </div>

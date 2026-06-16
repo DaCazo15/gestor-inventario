@@ -16,29 +16,29 @@ const props = defineProps({
 
 const emit = defineEmits(['logout', 'add-product', 'update-product', 'delete-product'])
 
-const editingProduct = ref(null)
+const equipoEnEdicion = ref(null)
 
-function handleSave(submitData, isEditing, id) {
-  if (isEditing) {
+function manejarGuardado(datosEnvio, estaEditando, id) {
+  if (estaEditando) {
     emit('update-product', {
       id,
-      ...submitData
+      ...datosEnvio
     })
   } else {
-    emit('add-product', submitData)
+    emit('add-product', datosEnvio)
   }
-  editingProduct.value = null
+  equipoEnEdicion.value = null
 }
 
-function handleEdit(product) {
-  editingProduct.value = product
+function manejarEdicion(equipo) {
+  equipoEnEdicion.value = equipo
 }
 
-function handleDelete(id) {
+function manejarEliminacion(id) {
   if (confirm('¿Está seguro de que desea eliminar este equipo?')) {
     emit('delete-product', id)
-    if (editingProduct.value?.id === id) {
-      editingProduct.value = null
+    if (equipoEnEdicion.value?.id === id) {
+      equipoEnEdicion.value = null
     }
   }
 }
@@ -78,18 +78,18 @@ function handleDelete(id) {
       <ProductForm 
         v-if="user.role !== 'user'"
         :user-role="user.role"
-        :editing-product="editingProduct"
+        :editing-product="equipoEnEdicion"
         :existing-products="products"
-        @save="handleSave"
-        @cancel="editingProduct = null"
+        @save="manejarGuardado"
+        @cancel="equipoEnEdicion = null"
       />
 
       <ProductList 
         :user-role="user.role"
         :products="products"
-        :editing-id="editingProduct?.id"
-        @edit="handleEdit"
-        @delete="handleDelete"
+        :editing-id="equipoEnEdicion?.id"
+        @edit="manejarEdicion"
+        @delete="manejarEliminacion"
       />
     </div>
   </div>

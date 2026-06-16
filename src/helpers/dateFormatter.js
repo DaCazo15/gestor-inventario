@@ -1,13 +1,13 @@
-export function formatDateForInput(dateStr) {
-  if (!dateStr) return ''
-  const date = new Date(dateStr)
-  if (isNaN(date.getTime())) return ''
-  return date.toISOString().split('T')[0]
+export function formatearFechaParaInput(cadenaFecha) {
+  if (!cadenaFecha) return ''
+  const fecha = new Date(cadenaFecha)
+  if (isNaN(fecha.getTime())) return ''
+  return fecha.toISOString().split('T')[0]
 }
 
-export function formatDateForDisplay(dateStr) {
-  if (!dateStr) return '-'
-  const date = new Date(dateStr)
-  if (isNaN(date.getTime())) return dateStr
-  return date.toLocaleDateString('es-ES')
+export function formatearFechaParaMostrar(cadenaFecha) {
+  if (!cadenaFecha) return '-'
+  const fecha = new Date(cadenaFecha)
+  if (isNaN(fecha.getTime())) return cadenaFecha
+  return fecha.toLocaleDateString('es-ES')
 }

@@ -1,28 +1,28 @@
 import { ref, computed } from 'vue'
 
 export function useProductFilter(props) {
-  const searchQuery = ref('')
-  const filterStatus = ref('active') // 'all', 'active', 'inactive'
+  const busqueda = ref('')
+  const filtroEstado = ref('active')
 
-  const filteredProducts = computed(() => {
-    let list = props.products
-    if (filterStatus.value === 'active') {
-      list = list.filter(p => p.status === true)
-    } else if (filterStatus.value === 'inactive') {
-      list = list.filter(p => p.status === false)
+  const equiposFiltrados = computed(() => {
+    let lista = props.products
+    if (filtroEstado.value === 'active') {
+      lista = lista.filter(p => p.status === true)
+    } else if (filtroEstado.value === 'inactive') {
+      lista = lista.filter(p => p.status === false)
     }
 
-    const query = searchQuery.value.toLowerCase().trim()
-    if (!query) return list
-    return list.filter(p => 
-      p.name?.toLowerCase().includes(query) || 
-      p.marca?.toLowerCase().includes(query)
+    const consulta = busqueda.value.toLowerCase().trim()
+    if (!consulta) return lista
+    return lista.filter(p =>
+      p.name?.toLowerCase().includes(consulta) ||
+      p.marca?.toLowerCase().includes(consulta)
     )
   })
 
   return {
-    searchQuery,
-    filterStatus,
-    filteredProducts
+    busqueda,
+    filtroEstado,
+    equiposFiltrados
   }
 }

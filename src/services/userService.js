@@ -1,5 +1,5 @@
 import { api } from './api'
 
-export const userService = {
-  getUsers: () => api.get('/user')
+export const servicioUsuario = {
+  obtenerUsuarios: () => api.obtener('/user')
 }
