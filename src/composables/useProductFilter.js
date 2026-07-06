@@ -16,7 +16,8 @@ export function useProductFilter(props) {
     if (!consulta) return lista
     return lista.filter(p =>
       p.name?.toLowerCase().includes(consulta) ||
-      p.marca?.toLowerCase().includes(consulta)
+      p.marca?.toLowerCase().includes(consulta) ||
+      p.departamento?.toLowerCase().includes(consulta)
     )
   })
 

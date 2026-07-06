@@ -27,13 +27,14 @@ function manejarEliminacion(id) {
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <h3 class="text-lg font-bold text-white border-l-4 border-aqua-500 pl-3 flex items-center gap-2">
           <span class="icon-[ri--list-settings-line] w-5 h-5 text-aqua-500"></span>
-          Lista de Equipos
+          Lista de Equipos 
+          <span class="ml-2 p-2 rounded-2xl bg-aqua-500/50 border-2 border-aqua-500 text-shark-800"> {{ equiposFiltrados.length  }}</span>
         </h3>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
-          <div class="flex bg-shark-950/60 rounded-lg p-1 border border-shark-800">
-            <button @click="filtroEstado = 'all'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filtroEstado === 'all' ? 'bg-shark-800 text-white' : 'text-shark-400 hover:text-shark-200']">Todos</button>
-            <button @click="filtroEstado = 'active'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filtroEstado === 'active' ? 'bg-aqua-500/20 text-aqua-400' : 'text-shark-400 hover:text-shark-200']">Activos</button>
-            <button @click="filtroEstado = 'inactive'" :class="['flex-1 sm:flex-none px-3 py-1.5 text-xs font-bold rounded-md transition-all', filtroEstado === 'inactive' ? 'bg-rose-500/20 text-rose-400' : 'text-shark-400 hover:text-shark-200']">Inactivos</button>
+          <div class="flex bg-shark-950/60 rounded-lg p-1 border border-shark-800 shrink-0">
+            <button @click="filtroEstado = 'all'" :class="['flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap', filtroEstado === 'all' ? 'bg-shark-800 text-white' : 'text-shark-400 hover:text-shark-200']">Todos</button>
+            <button @click="filtroEstado = 'active'" :class="['flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap', filtroEstado === 'active' ? 'bg-aqua-500/20 text-aqua-400' : 'text-shark-400 hover:text-shark-200']">Egresados</button>
+            <button @click="filtroEstado = 'inactive'" :class="['flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap', filtroEstado === 'inactive' ? 'bg-rose-500/20 text-rose-400' : 'text-shark-400 hover:text-shark-200']">Por revisar</button>
           </div>
           <div class="relative w-full sm:max-w-xs">
             <span class="icon-[bi--search] w-4 h-4 text-shark-400 absolute left-3.5 top-3"></span>
@@ -57,13 +58,13 @@ function manejarEliminacion(id) {
               <th class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Marca</th>
               <th class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Encargado</th>
               <th class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Estado</th>
-              <th v-if="filtroEstado === 'inactive'" class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Ingreso</th>
+              <th v-if="filtroEstado !== 'inactive'" class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Revisión</th>
               <th v-if="userRole !== 'user'" class="bg-shark-950/40 text-shark-400 px-5 py-4 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80 text-right">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="equiposFiltrados.length === 0">
-              <td :colspan="userRole !== 'user' ? 7 : 6" class="text-center text-shark-400 py-10 px-5 border-b border-shark-800/60">
+              <td :colspan="userRole !== 'user' ? (filtroEstado !== 'inactive' ? 7 : 6) : (filtroEstado !== 'inactive' ? 6 : 5)" class="text-center text-shark-400 py-10 px-5 border-b border-shark-800/60">
                 No se encontraron equipos
               </td>
             </tr>
@@ -78,7 +79,10 @@ function manejarEliminacion(id) {
                 <div v-if="equipo.description" class="text-xs text-shark-400 mt-1 max-w-[280px] truncate">{{ equipo.description }}</div>
               </td>
               <td class="px-5 py-4 text-sm text-shark-200">{{ equipo.marca }}</td>
-              <td class="px-5 py-4 text-sm text-shark-200">{{ equipo.encargado || '-' }}</td>
+              <td class="px-5 py-4 text-sm text-shark-200">
+                <div>{{ equipo.encargado || '-' }}</div>
+                <div v-if="equipo.departamento" class="text-xs text-shark-400 mt-1">{{ equipo.departamento }}</div>
+              </td>
               <td class="px-5 py-4 text-sm">
                 <span :class="['inline-block text-xs font-semibold px-2.5 py-1 rounded-md border', 
                   equipo.status ? 'bg-aqua-500/10 text-aqua-400 border-aqua-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
@@ -86,7 +90,7 @@ function manejarEliminacion(id) {
                   {{ equipo.statusStr || (equipo.status ? 'Activo' : 'Inactivo') }}
                 </span>
               </td>
-              <td v-if="filtroEstado === 'inactive'" class="px-5 py-4 text-sm text-shark-200">{{ formatearFechaParaMostrar(equipo.fechaIngreso) }}</td>
+              <td v-if="filtroEstado !== 'inactive'" class="px-5 py-4 text-sm text-shark-200">{{ formatearFechaParaMostrar(equipo.fechaRevision) }}</td>
               <td v-if="userRole !== 'user'" class="px-5 py-4 text-sm text-right w-[180px]">
                 <div class="flex gap-2 justify-end">
                   <button @click="manejarEdicion(equipo)" class="bg-aqua-500/10 border border-aqua-500/30 text-aqua-400 hover:bg-aqua-500 hover:text-shark-950 text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1">
@@ -139,9 +143,13 @@ function manejarEliminacion(id) {
                 <span class="text-shark-400 block mb-0.5">Encargado</span>
                 <span class="text-white font-semibold">{{ equipo.encargado || '-' }}</span>
               </div>
-              <div v-if="filtroEstado === 'inactive'">
-                <span class="text-shark-400 block mb-0.5">Ingreso</span>
-                <span class="text-white font-semibold">{{ formatearFechaParaMostrar(equipo.fechaIngreso) }}</span>
+              <div v-if="equipo.departamento" class="col-span-2">
+                <span class="text-shark-400 block mb-0.5">Departamento</span>
+                <span class="text-white font-semibold">{{ equipo.departamento }}</span>
+              </div>
+              <div v-if="equipo.fechaRevision" class="col-span-2">
+                <span class="text-shark-400 block mb-0.5">Fecha de Revisión</span>
+                <span class="text-white font-semibold">{{ formatearFechaParaMostrar(equipo.fechaRevision) }}</span>
               </div>
             </div>
           </div>

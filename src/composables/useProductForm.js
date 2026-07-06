@@ -9,10 +9,10 @@ export function useProductForm(props, emit) {
   const descripcion = ref('')
   const encargado = ref('')
   const notificante = ref('')
-  const estado = ref(true)
-  const estadoTexto = ref('Activo')
-  const fechaIngreso = ref('')
-  const fechaEgreso = ref('')
+  const estado = ref(false)
+  const estadoTexto = ref('Por revisar')
+  const fechaRevision = ref('')
+  const departamento = ref('')
 
   watch(() => props.editingProduct, (nuevoValor) => {
     if (nuevoValor) {
@@ -21,32 +21,35 @@ export function useProductForm(props, emit) {
       descripcion.value = nuevoValor.description || ''
       encargado.value = nuevoValor.encargado || ''
       notificante.value = nuevoValor.notificante || ''
-      estado.value = nuevoValor.status !== undefined ? nuevoValor.status : true
-      estadoTexto.value = nuevoValor.statusStr || (estado.value ? 'Activo' : 'Inactivo')
-      fechaIngreso.value = formatearFechaParaInput(nuevoValor.fechaIngreso)
-      fechaEgreso.value = formatearFechaParaInput(nuevoValor.fechaEgreso)
+      estado.value = nuevoValor.status !== undefined ? nuevoValor.status : false
+      if (nuevoValor.statusStr) {
+        if (nuevoValor.statusStr === 'Activo') {
+          estadoTexto.value = 'Egresado'
+        } else if (nuevoValor.statusStr === 'Inactivo') {
+          estadoTexto.value = 'Por revisar'
+        } else {
+          estadoTexto.value = nuevoValor.statusStr
+        }
+      } else {
+        estadoTexto.value = estado.value ? 'Egresado' : 'Por revisar'
+      }
+      fechaRevision.value = formatearFechaParaInput(nuevoValor.fechaRevision)
+      departamento.value = nuevoValor.departamento || ''
     } else {
       reiniciarFormulario()
     }
   }, { immediate: true })
 
-  watch(fechaEgreso, (nuevoValor) => {
-    if (nuevoValor) {
-      estado.value = false
-      estadoTexto.value = 'Inactivo'
-    } else {
-      estado.value = true
-      estadoTexto.value = 'Activo'
+  watch(estado, (nuevoEstado) => {
+    if (!nuevoEstado) {
+      fechaRevision.value = ''
+    } else if (!fechaRevision.value) {
+      fechaRevision.value = new Date().toISOString().split('T')[0]
     }
   })
 
   function manejarCambioEstado() {
-    estadoTexto.value = estado.value ? 'Activo' : 'Inactivo'
-    if (!estado.value && !fechaEgreso.value) {
-      fechaEgreso.value = new Date().toISOString().split('T')[0]
-    } else if (estado.value && fechaEgreso.value) {
-      fechaEgreso.value = ''
-    }
+    estadoTexto.value = estado.value ? 'Egresado' : 'Por revisar'
   }
 
   function reiniciarFormulario() {
@@ -55,10 +58,10 @@ export function useProductForm(props, emit) {
     descripcion.value = ''
     encargado.value = ''
     notificante.value = ''
-    estado.value = true
-    estadoTexto.value = 'Activo'
-    fechaIngreso.value = ''
-    fechaEgreso.value = ''
+    estado.value = false
+    estadoTexto.value = 'Por revisar'
+    fechaRevision.value = ''
+    departamento.value = ''
   }
 
   function manejarEnvio() {
@@ -70,8 +73,8 @@ export function useProductForm(props, emit) {
       notificante: notificante.value.trim(),
       status: estado.value,
       statusStr: estadoTexto.value,
-      fechaIngreso: fechaIngreso.value ? new Date(fechaIngreso.value).toISOString() : null,
-      fechaEgreso: fechaEgreso.value ? new Date(fechaEgreso.value).toISOString() : null
+      fechaRevision: fechaRevision.value ? new Date(fechaRevision.value).toISOString() : null,
+      departamento: departamento.value
     }
 
     if (!datosEnvio.name || !datosEnvio.marca) {
@@ -101,8 +104,8 @@ export function useProductForm(props, emit) {
     notificante,
     estado,
     estadoTexto,
-    fechaIngreso,
-    fechaEgreso,
+    fechaRevision,
+    departamento,
     manejarCambioEstado,
     manejarEnvio,
     cancelarEdicion

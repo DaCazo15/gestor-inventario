@@ -1,5 +1,6 @@
 <script setup>
 import { useProductForm } from '../composables/useProductForm'
+import {departamentos} from '../helpers/listDepartamento'
 
 const props = defineProps({
   userRole: { type: String, required: true },
@@ -18,8 +19,8 @@ const {
   notificante,
   estado,
   estadoTexto,
-  fechaIngreso,
-  fechaEgreso,
+  fechaRevision,
+  departamento,
   manejarCambioEstado,
   manejarEnvio,
   cancelarEdicion
@@ -83,23 +84,32 @@ const {
           </div>
 
           <div class="flex flex-col gap-2">
-            <label for="fechaIngreso" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Fecha Ingreso</label>
+            <label for="fechaRevision" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Fecha de Revisión</label>
             <input
               type="date"
-              id="fechaIngreso"
-              v-model="fechaIngreso"
-              class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200"
+              id="fechaRevision"
+              v-model="fechaRevision"
+              :disabled="!estado"
+              class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
-          <div class="flex flex-col gap-2">
-            <label for="fechaEgreso" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Fecha Egreso</label>
-            <input
-              type="date"
-              id="fechaEgreso"
-              v-model="fechaEgreso"
-              class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200"
-            />
+          <div class="flex flex-col gap-2 col-span-1 sm:col-span-2 lg:col-span-1">
+            <label for="departamento" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Departamento</label>
+            <select
+              id="departamento"
+              v-model="departamento"
+              class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200 block w-full"
+            >
+              <option value="" disabled selected>Seleccione un departamento</option>
+              <option 
+                v-for="(depto, index) in departamentos" 
+                :key="index" 
+                :value="depto"
+              >
+                {{ depto }}
+              </option>
+            </select>
           </div>
 
           <div class="flex flex-col gap-2 sm:col-span-2">

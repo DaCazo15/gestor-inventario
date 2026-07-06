@@ -10,7 +10,6 @@ const mensajeError = ref('')
 const credencialesDePrueba = [
   { email: 'admin@test.com', pass: 'admin123', etiqueta: 'Admin', role: 'admin', icono: 'icon-[ri--admin-fill] text-rose-500' },
   { email: 'emp@test.com', pass: 'emp123', etiqueta: 'Empleado', role: 'empleado', icono: 'icon-[ri--user-settings-fill] text-aqua-500' },
-  { email: 'user@test.com', pass: 'user123', etiqueta: 'Usuario', role: 'user', icono: 'icon-[ri--user-fill] text-shark-400' }
 ]
 
 function rellenarCredenciales(email, pass) {
