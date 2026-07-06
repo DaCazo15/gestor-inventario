@@ -30,7 +30,7 @@ function imprimirReporte(equipo) {
     <html lang="es">
     <head>
       <meta charset="UTF-8">
-      <title>Reporte Técnico - \${equipo.name}</title>
+      <title>Reporte Técnico - ${equipo.name}</title>
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         body {
@@ -153,8 +153,8 @@ function imprimirReporte(equipo) {
           <p>Reporte de Control de Activos e Infraestructura</p>
         </div>
         <div class="info-area">
-          <p><strong>ID de Reporte:</strong> #REP-\${equipo.id}</p>
-          <p><strong>Fecha Generación:</strong> \${fechaActual}</p>
+          <p><strong>ID de Reporte:</strong> #REP-${equipo.id}</p>
+          <p><strong>Fecha Generación:</strong> ${fechaActual}</p>
         </div>
       </div>
 
@@ -165,40 +165,40 @@ function imprimirReporte(equipo) {
       <div class="grid-details">
         <div class="detail-card">
           <h3>Nombre del Equipo</h3>
-          <p>\${equipo.name}</p>
+          <p>${equipo.name}</p>
         </div>
         <div class="detail-card">
           <h3>Marca</h3>
-          <p>\${equipo.marca}</p>
+          <p>${equipo.marca}</p>
         </div>
         <div class="detail-card">
           <h3>Departamento</h3>
-          <p>\${equipo.departamento || 'No especificado'}</p>
+          <p>${equipo.departamento || 'No especificado'}</p>
         </div>
         <div class="detail-card">
           <h3>Estado del Equipo</h3>
           <p>
-            <span class="status-badge \${equipo.status ? 'status-egresado' : 'status-pendiente'}">
-              \${equipo.statusStr || (equipo.status ? 'Egresado' : 'Por revisar')}
+            <span class="status-badge ${equipo.status ? 'status-egresado' : 'status-pendiente'}">
+              ${equipo.statusStr || (equipo.status ? 'Egresado' : 'Por revisar')}
             </span>
           </p>
         </div>
         <div class="detail-card">
           <h3>Encargado</h3>
-          <p>\${equipo.encargado || 'No asignado'}</p>
+          <p>${equipo.encargado || 'No asignado'}</p>
         </div>
         <div class="detail-card">
           <h3>Notificante</h3>
-          <p>\${equipo.notificante || 'No asignado'}</p>
+          <p>${equipo.notificante || 'No asignado'}</p>
         </div>
         <div class="detail-card full-width">
           <h3>Fecha de Revisión</h3>
-          <p>\${fechaRevisionFormateada}</p>
+          <p>${fechaRevisionFormateada}</p>
         </div>
         <div class="detail-card full-width">
           <h3>Descripción y Notas Técnicas</h3>
           <p style="font-weight: 400; line-height: 1.6; color: #334155;">
-            \${equipo.description || 'Sin descripción adicional registrada.'}
+            ${equipo.description || 'Sin descripción adicional registrada.'}
           </p>
         </div>
       </div>
@@ -296,7 +296,7 @@ function imprimirReporte(equipo) {
               <td v-if="filtroEstado !== 'inactive'" class="px-5 py-4 text-sm text-shark-200">{{ formatearFechaParaMostrar(equipo.fechaRevision) }}</td>
               <td class="px-5 py-4 text-sm text-right w-[200px]">
                 <div class="flex gap-2 justify-end">
-                  <button v-if="!equipo.status" @click="imprimirReporte(equipo)" class="bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-shark-950 text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1">
+                  <button v-if="equipo.status" @click="imprimirReporte(equipo)" class="bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-shark-950 text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1">
                     <span class="icon-[ri--printer-line] w-4.5 h-4.5"></span>
                     PDF
                   </button>
@@ -362,7 +362,7 @@ function imprimirReporte(equipo) {
           </div>
 
           <div class="flex gap-3 pt-3 border-t border-shark-800/60 justify-end flex-wrap">
-            <button v-if="!equipo.status" @click="imprimirReporte(equipo)" class="flex-1 min-w-[80px] justify-center bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-shark-950 text-xs font-bold px-3 py-2 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1.5">
+            <button v-if="equipo.status" @click="imprimirReporte(equipo)" class="flex-1 min-w-[80px] justify-center bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-shark-950 text-xs font-bold px-3 py-2 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1.5">
               <span class="icon-[ri--printer-line] w-4.5 h-4.5"></span>
               PDF
             </button>
