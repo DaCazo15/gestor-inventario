@@ -35,7 +35,8 @@ function manejarEnvio() {
     <div class="bg-shark-900/70 border border-shark-800/80 backdrop-blur-xl rounded-2xl p-6 lg:p-8 w-full max-w-md lg:max-w-none transition-all duration-300">
       <div class="text-center mb-8 flex flex-col items-center">
         <img src="../assets/ico/ico.png" alt="tools" class="w-12 h-12 mb-3">
-        <h2 class="text-2xl font-bold text-white mb-1">Iniciar Sesión</h2>
+        <h2 class="text-3xl font-bold text-white mb-1">Iniciar Sesión</h2>
+        <h3 class="text-2xl font-bold text-white mb-1">Grupo David</h3>
         <p class="text-sm text-shark-400">Acceda al panel de gestión de equipos</p>
       </div>
 
