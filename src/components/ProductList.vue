@@ -95,7 +95,7 @@ function imprimirReporteFiltrado() {
               <td class="px-5 py-4 text-sm">
                 <div class="font-bold text-white">{{ equipo.name }}</div>
                 <div v-if="equipo.idEquipo" class="text-xs text-aqua-500 font-semibold mt-0.5">ID Equipo: {{ equipo.idEquipo }}</div>
-                <div v-if="equipo.description" class="text-xs text-shark-400 mt-1 max-w-[280px] truncate">{{ equipo.description }}</div>
+                <div v-if="equipo.description" class="text-xs text-shark-400 mt-1 max-w-[280px]">{{ equipo.description }}</div>
               </td>
               <td class="px-5 py-4 text-sm text-shark-200">{{ equipo.marca }}</td>
               <td class="px-5 py-4 text-sm text-shark-200">
