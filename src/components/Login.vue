@@ -48,7 +48,6 @@ function manejarEnvio() {
             id="nombreUsuario"
             v-model="nombreUsuario"
             required
-            placeholder="admin@test.com"
             class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-3 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 transition-all duration-200"
           />
         </div>
@@ -60,7 +59,6 @@ function manejarEnvio() {
             id="contrasena"
             v-model="contrasena"
             required
-            placeholder="••••••••"
             class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-3 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 transition-all duration-200"
           />
         </div>

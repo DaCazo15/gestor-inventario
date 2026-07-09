@@ -18,6 +18,10 @@
   --color-aqua-800: #006b72;
 }
 
+html {
+  scrollbar-gutter: stable !important;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-shark-950);

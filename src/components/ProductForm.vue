@@ -19,9 +19,14 @@ const {
   notificante,
   estado,
   estadoTexto,
+  nuevo,
+  danado,
   fechaRevision,
   departamento,
+  idEquipo,
   manejarCambioEstado,
+  manejarCambioNuevo,
+  manejarCambioDanado,
   manejarEnvio,
   cancelarEdicion
 } = useProductForm(props, emit)
@@ -44,11 +49,10 @@ const {
               id="nombre"
               v-model="nombre"
               required
-              placeholder="Ej: Servidor Web HP"
               class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200"
             />
           </div>
-
+ 
           <div class="flex flex-col gap-2">
             <label for="marca" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Marca </label>
             <input
@@ -56,33 +60,41 @@ const {
               id="marca"
               v-model="marca"
               required
-              placeholder="Ej: Hewlett-Packard"
               class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200"
             />
           </div>
-
+ 
+          <div class="flex flex-col gap-2">
+            <label for="idEquipo" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">ID Equipo</label>
+            <input
+              type="text"
+              id="idEquipo"
+              v-model="idEquipo"
+              required
+              class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200"
+            />
+          </div>
+ 
           <div class="flex flex-col gap-2">
             <label for="encargado" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Encargado</label>
             <input
               type="text"
               id="encargado"
               v-model="encargado"
-              placeholder="Nombre del encargado"
               class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200"
             />
           </div>
-
+ 
           <div class="flex flex-col gap-2">
             <label for="notificante" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Notificante</label>
             <input
               type="text"
               id="notificante"
               v-model="notificante"
-              placeholder="Nombre de quien notifica"
               class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200"
             />
           </div>
-
+ 
           <div class="flex flex-col gap-2">
             <label for="fechaRevision" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Fecha de Revisión</label>
             <input
@@ -93,7 +105,7 @@ const {
               class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
-
+ 
           <div class="flex flex-col gap-2 col-span-1 sm:col-span-2 lg:col-span-1">
             <label for="departamento" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Departamento</label>
             <select
@@ -111,29 +123,57 @@ const {
               </option>
             </select>
           </div>
-
+ 
           <div class="flex flex-col gap-2 sm:col-span-2">
             <label for="descripcion" class="text-xs font-semibold text-shark-400 uppercase tracking-wider">Descripción</label>
             <input
               type="text"
               id="descripcion"
               v-model="descripcion"
-              placeholder="Detalles sobre el estado o ubicación del equipo"
               class="bg-shark-950/60 border border-shark-800 rounded-lg px-4 py-2.5 text-white outline-none focus:border-aqua-500 focus:ring-2 focus:ring-aqua-500/20 text-sm transition-all duration-200"
             />
           </div>
+ 
+          <!-- Toggles/Checkboxes para Estados -->
+          <div class="flex flex-wrap items-center gap-6 pt-4 sm:pt-6 col-span-1 sm:col-span-2 lg:col-span-2">
+            <div class="flex items-center gap-2">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  v-model="estado"
+                  @change="manejarCambioEstado"
+                  class="sr-only peer"
+                />
+                <div class="w-11 h-6 bg-shark-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-shark-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-aqua-500"></div>
+              </label>
+              <span class="text-sm font-semibold text-white">{{ estadoTexto }}</span>
+            </div>
 
-          <div class="flex items-center gap-3 pt-4 sm:pt-6 col-span-1 sm:col-span-2 lg:col-span-1">
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                v-model="estado"
-                @change="manejarCambioEstado"
-                class="sr-only peer"
-              />
-              <div class="w-11 h-6 bg-shark-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-shark-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-aqua-500"></div>
-            </label>
-            <span class="text-sm font-semibold text-white">Estado: {{ estadoTexto }}</span>
+            <div class="flex items-center gap-2">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  v-model="nuevo"
+                  @change="manejarCambioNuevo"
+                  class="sr-only peer"
+                />
+                <div class="w-11 h-6 bg-shark-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-shark-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-aqua-500"></div>
+              </label>
+              <span class="text-sm font-semibold text-white">Nuevo</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  v-model="danado"
+                  @change="manejarCambioDanado"
+                  class="sr-only peer"
+                />
+                <div class="w-11 h-6 bg-shark-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-shark-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-aqua-500"></div>
+              </label>
+              <span class="text-sm font-semibold text-white">Dañado</span>
+            </div>
           </div>
         </div>
 

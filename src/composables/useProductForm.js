@@ -10,9 +10,13 @@ export function useProductForm(props, emit) {
   const encargado = ref('')
   const notificante = ref('')
   const estado = ref(false)
-  const estadoTexto = ref('Por revisar')
+  const estadoTexto = ref('Por reparar')
+  const nuevo = ref(false)
+  const danado = ref(false)
   const fechaRevision = ref('')
   const departamento = ref('')
+  const idEquipo = ref('')
+  const fechaRegistro = ref('')
 
   watch(() => props.editingProduct, (nuevoValor) => {
     if (nuevoValor) {
@@ -21,20 +25,23 @@ export function useProductForm(props, emit) {
       descripcion.value = nuevoValor.description || ''
       encargado.value = nuevoValor.encargado || ''
       notificante.value = nuevoValor.notificante || ''
+      
+      nuevo.value = nuevoValor.nuevo === true || nuevoValor.nuevo === 'true'
+      danado.value = nuevoValor.danado === true || nuevoValor.danado === 'true'
       estado.value = nuevoValor.status !== undefined ? nuevoValor.status : false
-      if (nuevoValor.statusStr) {
-        if (nuevoValor.statusStr === 'Activo') {
-          estadoTexto.value = 'Egresado'
-        } else if (nuevoValor.statusStr === 'Inactivo') {
-          estadoTexto.value = 'Por revisar'
-        } else {
-          estadoTexto.value = nuevoValor.statusStr
-        }
+      
+      if (nuevo.value) {
+        estadoTexto.value = 'Óptimo'
+      } else if (danado.value) {
+        estadoTexto.value = 'Dañado'
       } else {
-        estadoTexto.value = estado.value ? 'Egresado' : 'Por revisar'
+        estadoTexto.value = estado.value ? 'Reparado' : 'Por reparar'
       }
+      
       fechaRevision.value = formatearFechaParaInput(nuevoValor.fechaRevision)
       departamento.value = nuevoValor.departamento || ''
+      idEquipo.value = nuevoValor.idEquipo || ''
+      fechaRegistro.value = nuevoValor.fechaRegistro || ''
     } else {
       reiniciarFormulario()
     }
@@ -49,7 +56,33 @@ export function useProductForm(props, emit) {
   })
 
   function manejarCambioEstado() {
-    estadoTexto.value = estado.value ? 'Egresado' : 'Por revisar'
+    if (estado.value) {
+      danado.value = false
+      nuevo.value = false
+      estadoTexto.value = 'Reparado'
+    } else {
+      estadoTexto.value = 'Por reparar'
+    }
+  }
+
+  function manejarCambioNuevo() {
+    if (nuevo.value) {
+      danado.value = false
+      estado.value = true
+      estadoTexto.value = 'Óptimo'
+    } else {
+      estadoTexto.value = estado.value ? 'Reparado' : 'Por reparar'
+    }
+  }
+
+  function manejarCambioDanado() {
+    if (danado.value) {
+      nuevo.value = false
+      estado.value = false
+      estadoTexto.value = 'Dañado'
+    } else {
+      estadoTexto.value = estado.value ? 'Reparado' : 'Por reparar'
+    }
   }
 
   function reiniciarFormulario() {
@@ -58,10 +91,14 @@ export function useProductForm(props, emit) {
     descripcion.value = ''
     encargado.value = ''
     notificante.value = ''
+    nuevo.value = false
+    danado.value = false
     estado.value = false
-    estadoTexto.value = 'Por revisar'
+    estadoTexto.value = 'Por reparar'
     fechaRevision.value = ''
     departamento.value = ''
+    idEquipo.value = ''
+    fechaRegistro.value = ''
   }
 
   function manejarEnvio() {
@@ -72,13 +109,17 @@ export function useProductForm(props, emit) {
       encargado: encargado.value.trim(),
       notificante: notificante.value.trim(),
       status: estado.value,
-      statusStr: estadoTexto.value,
+      statusStr: nuevo.value ? 'Óptimo' : (danado.value ? 'Dañado' : (estado.value ? 'Reparado' : 'Por reparar')),
+      nuevo: nuevo.value,
+      danado: danado.value,
       fechaRevision: fechaRevision.value ? new Date(fechaRevision.value).toISOString() : null,
-      departamento: departamento.value
+      departamento: departamento.value,
+      idEquipo: idEquipo.value.trim(),
+      fechaRegistro: fechaRegistro.value || new Date().toISOString()
     }
 
-    if (!datosEnvio.name || !datosEnvio.marca) {
-      alert('Por favor complete los campos obligatorios (Nombre y Marca).')
+    if (!datosEnvio.name || !datosEnvio.marca || !datosEnvio.idEquipo) {
+      alert('Por favor complete los campos obligatorios (Nombre, Marca e ID Equipo).')
       return
     }
 
@@ -104,9 +145,15 @@ export function useProductForm(props, emit) {
     notificante,
     estado,
     estadoTexto,
+    nuevo,
+    danado,
     fechaRevision,
     departamento,
+    idEquipo,
+    fechaRegistro,
     manejarCambioEstado,
+    manejarCambioNuevo,
+    manejarCambioDanado,
     manejarEnvio,
     cancelarEdicion
   }

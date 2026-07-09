@@ -2,7 +2,10 @@
 import { ref } from 'vue'
 import ProductForm from './ProductForm.vue'
 import ProductList from './ProductList.vue'
+import RegistroServicios from './RegistroServicios.vue'
 
+const formEquipo = ref(false)
+const vistaActual = ref('dashboard')
 const props = defineProps({
   user: {
     type: Object,
@@ -15,7 +18,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['logout', 'add-product', 'update-product', 'delete-product'])
-
+  
 const equipoEnEdicion = ref(null)
 
 function manejarGuardado(datosEnvio, estaEditando, id) {
@@ -68,28 +71,57 @@ function manejarEliminacion(id) {
           </div>
         </div>
       </div>
-      <button @click="$emit('logout')" class="w-full sm:w-auto justify-center bg-shark-950/40 border border-shark-800 hover:bg-rose-500/15 hover:border-rose-500 hover:text-rose-200 text-shark-200 px-4.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5">
-        <span class="icon-[ri--logout-box-r-line] w-4.5 h-4.5"></span>
-        Cerrar Sesión
-      </button>
+      <div class="flex justify-end gap-5">
+        <button @click="vistaActual = vistaActual === 'dashboard' ? 'servicios' : 'dashboard'" class="w-full sm:w-auto justify-center bg-orange-800/40 border border-orange-600 hover:bg-orange-700 hover:border-orange-400/50 text-shark-200 px-4.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5">
+          <span :class="['w-4.5 h-4.5', vistaActual === 'servicios' ? 'icon-[ri--arrow-left-line]' : 'icon-[ri--tools-line]']"></span>
+          {{ vistaActual === 'servicios' ? 'Volver al Panel' : 'Registro de Servicios' }}
+        </button>
+        <button @click="$emit('logout')" class="w-full sm:w-auto justify-center bg-shark-950/40 border border-shark-800 hover:bg-rose-500/15 hover:border-rose-500 hover:text-rose-200 text-shark-200 px-4.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5">
+          <span class="icon-[ri--logout-box-r-line] w-4.5 h-4.5"></span>
+          Cerrar Sesión
+        </button>
+      </div>
     </header>
 
+    
     <div class="flex flex-col gap-8">
-      <ProductForm 
-        v-if="user.role !== 'user'"
-        :user-role="user.role"
-        :editing-product="equipoEnEdicion"
-        :existing-products="products"
-        @save="manejarGuardado"
-        @cancel="equipoEnEdicion = null"
-      />
+      <template v-if="vistaActual === 'dashboard'">
+        <ProductForm 
+          v-if="user.role !== 'user' && formEquipo"
+          :user-role="user.role"
+          :editing-product="equipoEnEdicion"
+          :existing-products="products"
+          @save="manejarGuardado"
+          @cancel="equipoEnEdicion = null"
+        />
 
-      <ProductList 
-        :user-role="user.role"
+        <button 
+          v-if="user.role === 'admin'"
+          @click="formEquipo = !formEquipo" 
+          class="
+            w-full sm:w-auto justify-center bg-shark-950/40 border 
+            border-green-800 hover:bg-green-500/15 hover:border-green-500 
+            hover:text-green-200 text-shark-200 px-4.5 py-2.5 rounded-xl text-sm 
+            font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5
+          "
+        >
+          {{formEquipo ? 'Ocultar' : 'Registrar'}}
+        </button>
+
+        <ProductList 
+          :user-role="user.role"
+          :products="products"
+          :editing-id="equipoEnEdicion?.id"
+          @edit="manejarEdicion"
+          @delete="manejarEliminacion"
+        />
+      </template>
+
+      <RegistroServicios
+        v-else
         :products="products"
-        :editing-id="equipoEnEdicion?.id"
-        @edit="manejarEdicion"
-        @delete="manejarEliminacion"
+        :user-role="user.role"
+        @volver="vistaActual = 'dashboard'"
       />
     </div>
   </div>
