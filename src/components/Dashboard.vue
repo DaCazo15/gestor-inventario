@@ -31,6 +31,7 @@ function manejarGuardado(datosEnvio, estaEditando, id) {
     emit('add-product', datosEnvio)
   }
   equipoEnEdicion.value = null
+  formEquipo.value = false
 }
 
 function manejarEdicion(equipo) {
@@ -86,18 +87,9 @@ function manejarEliminacion(id) {
     
     <div class="flex flex-col gap-8">
       <template v-if="vistaActual === 'dashboard'">
-        <ProductForm 
-          v-if="user.role !== 'user' && formEquipo"
-          :user-role="user.role"
-          :editing-product="equipoEnEdicion"
-          :existing-products="products"
-          @save="manejarGuardado"
-          @cancel="equipoEnEdicion = null"
-        />
-
         <button 
           v-if="user.role === 'admin'"
-          @click="formEquipo = !formEquipo" 
+          @click="formEquipo = true" 
           class="
             w-full sm:w-auto justify-center bg-shark-950/40 border 
             border-green-800 hover:bg-green-500/15 hover:border-green-500 
@@ -105,7 +97,7 @@ function manejarEliminacion(id) {
             font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5
           "
         >
-          {{formEquipo ? 'Ocultar' : 'Registrar'}}
+          Registrar
         </button>
 
         <ProductList 
@@ -122,7 +114,18 @@ function manejarEliminacion(id) {
         :products="products"
         :user-role="user.role"
         @volver="vistaActual = 'dashboard'"
+        @edit="manejarEdicion"
       />
     </div>
+
+    <!-- Modal del Formulario (disponible en ambas vistas) -->
+    <ProductForm 
+      v-if="user.role !== 'user' && (formEquipo || equipoEnEdicion)"
+      :user-role="user.role"
+      :editing-product="equipoEnEdicion"
+      :existing-products="products"
+      @save="manejarGuardado"
+      @cancel="equipoEnEdicion = null; formEquipo = false"
+    />
   </div>
 </template>

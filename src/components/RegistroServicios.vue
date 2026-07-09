@@ -8,7 +8,7 @@ const props = defineProps({
   userRole: { type: String, required: true }
 })
 
-const emit = defineEmits(['volver'])
+const emit = defineEmits(['volver', 'edit'])
 
 const filtroServicio = ref('todos')
 const busqueda = ref('')
@@ -73,6 +73,10 @@ const contadorDanados = computed(() => {
 function generarPDF() {
   imprimirReporteServicios(filtroServicio.value, props.products)
 }
+
+function iniciarEdicion(equipo) {
+  emit('edit', equipo)
+}
 </script>
 
 <template>
@@ -109,7 +113,7 @@ function generarPDF() {
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
+      <!-- <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
         <div class="bg-shark-950/40 border border-shark-800 rounded-xl p-4 text-center">
           <p class="text-2xl font-extrabold text-white">{{ equiposFiltrados.length }}</p>
           <p class="text-[11px] font-semibold text-shark-400 uppercase tracking-wider mt-1">Total Equipos</p>
@@ -122,7 +126,7 @@ function generarPDF() {
           <p class="text-2xl font-extrabold text-rose-400">{{ contadorDanados }}</p>
           <p class="text-[11px] font-semibold text-shark-400 uppercase tracking-wider mt-1">Dañados</p>
         </div>
-      </div>
+      </div> -->
 
       <div v-if="departamentosOrdenados.length === 0" class="text-center text-shark-400 py-16 bg-shark-950/20 border border-shark-800 rounded-xl">
         <span class="icon-[ri--inbox-line] w-10 h-10 mx-auto block mb-3 text-shark-600"></span>
@@ -150,6 +154,7 @@ function generarPDF() {
                 <th class="bg-shark-950/40 text-shark-400 px-4 py-3 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Notificante</th>
                 <th class="bg-shark-950/40 text-shark-400 px-4 py-3 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Estado</th>
                 <th class="bg-shark-950/40 text-shark-400 px-4 py-3 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80">Revisión</th>
+                <th v-if="userRole !== 'user'" class="bg-shark-950/40 text-shark-400 px-4 py-3 font-semibold text-xs uppercase tracking-wider border-b border-shark-800/80 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -158,14 +163,29 @@ function generarPDF() {
                 :key="equipo.id"
                 class="border-b border-shark-800/60 hover:bg-shark-950/20 transition-all duration-150"
               >
-                <td class="px-4 py-3 text-sm font-semibold text-amber-500">{{ equipo.idEquipo || 'S/N' }}</td>
+                <td 
+                  class="px-4 py-3 text-sm font-semibold text-amber-500"
+                  :class="{ 'text-amber-500/50' : equipo.danado === true }"
+                >{{ equipo.idEquipo || 'S/N' }}</td>
                 <td class="px-4 py-3 text-sm">
                   <div class="font-bold text-white">{{ equipo.name }}</div>
-                  <div v-if="equipo.description" class="text-xs text-shark-400 mt-1 max-w-[250px] truncate">{{ equipo.description }}</div>
+                  <div 
+                    v-if="equipo.description" 
+                    class="text-xs text-shark-400 mt-1 max-w-[250px]"
+                  >{{ equipo.description }}</div>
                 </td>
-                <td class="px-4 py-3 text-sm text-shark-200">{{ equipo.marca }}</td>
-                <td class="px-4 py-3 text-sm text-shark-200">{{ equipo.encargado || '-' }}</td>
-                <td class="px-4 py-3 text-sm text-shark-200">{{ equipo.notificante || '-' }}</td>
+                <td 
+                  class="px-4 py-3 text-sm text-shark-200"
+                  :class="{ 'text-shark-600' : equipo.danado === true }"
+                >{{ equipo.marca }}</td>
+                <td 
+                  class="px-4 py-3 text-sm text-shark-200"
+                  :class="{ 'text-shark-600' : equipo.danado === true }"
+                >{{ equipo.encargado || '-' }}</td>
+                <td 
+                  class="px-4 py-3 text-sm text-shark-200"
+                  :class="{ 'text-shark-600' : equipo.danado === true }"
+                >{{ equipo.notificante || '-' }}</td>
                 <td class="px-4 py-3 text-sm">
                   <span :class="['inline-block text-xs font-semibold px-2.5 py-1 rounded-md border',
                     (equipo.nuevo === true || equipo.nuevo === 'true') ? 'bg-aqua-500/10 text-aqua-400 border-aqua-500/20' :
@@ -176,7 +196,18 @@ function generarPDF() {
                     {{ equipo.statusStr || ((equipo.nuevo === true || equipo.nuevo === 'true') ? 'Óptimo' : ((equipo.danado === true || equipo.danado === 'true') ? 'Dañado' : (equipo.status ? 'Reparado' : 'Por reparar'))) }}
                   </span>
                 </td>
-                <td class="px-4 py-3 text-sm text-shark-200">{{ equipo.fechaRevision ? formatearFechaParaMostrar(equipo.fechaRevision) : 'Pendiente' }}</td>
+                <td class="px-4 py-3 text-sm text-shark-200">{{ equipo.fechaRevision ? formatearFechaParaMostrar(equipo.fechaRevision) : equipo.danado === true ? '' : 'Pendiente' }}</td>
+                <td v-if="userRole !== 'user'" class="px-2 py-3 text-sm text-right w-[100px]">
+                  <button 
+                    v-if="!equipo.nuevo && !equipo.danado && (equipo.status === false || equipo.statusStr === 'Por reparar')"
+                    @click="iniciarEdicion(equipo)"
+                    class="bg-aqua-500/10 border border-aqua-500/30 text-aqua-400 hover:bg-aqua-500 hover:text-shark-950 text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1 ml-auto"
+                  >
+                    <span class="icon-[bx--edit] w-4.5 h-4.5"></span>
+                    Editar
+                  </button>
+                  <span v-else></span>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -218,8 +249,19 @@ function generarPDF() {
               </div>
               <div>
                 <span class="text-shark-400 block mb-0.5">Revisión</span>
-                <span class="text-white font-semibold">{{ equipo.fechaRevision ? formatearFechaParaMostrar(equipo.fechaRevision) : 'Pendiente' }}</span>
+                <span class="text-white font-semibold">{{ equipo.fechaRevision ? formatearFechaParaMostrar(equipo.fechaRevision) : (equipo.danado === true ? '' : 'Pendiente') }}</span>
               </div>
+            </div>
+
+            <!-- Botón de editar para móviles si es Por Reparar -->
+            <div v-if="userRole !== 'user' && !equipo.nuevo && !equipo.danado && (equipo.status === false || equipo.statusStr === 'Por reparar')" class="flex justify-end pt-3 border-t border-shark-800/60">
+              <button 
+                @click="iniciarEdicion(equipo)"
+                class="bg-aqua-500/10 border border-aqua-500/30 text-aqua-400 hover:bg-aqua-500 hover:text-shark-950 text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-all duration-150 flex items-center gap-1"
+              >
+                <span class="icon-[bx--edit] w-4 h-4"></span>
+                Editar
+              </button>
             </div>
           </div>
         </div>

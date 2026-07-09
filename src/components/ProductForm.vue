@@ -33,8 +33,16 @@ const {
 </script>
 
 <template>
-  <section>
-    <div class="bg-shark-900/70 border border-shark-800/80 backdrop-blur-xl rounded-2xl p-6 shadow-2xl">
+  <div class="fixed inset-0 bg-shark-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-shark-900 border border-shark-800 rounded-2xl p-6 shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
+      <button 
+        type="button" 
+        @click="cancelarEdicion" 
+        class="absolute top-4 right-4 text-shark-400 hover:text-white transition-colors cursor-pointer"
+      >
+        <span class="icon-[ri--close-line] w-6 h-6"></span>
+      </button>
+
       <h3 class="text-lg font-bold text-white mb-6 border-l-4 border-aqua-500 pl-3 flex items-center gap-2">
         <span :class="['w-5 h-5 text-aqua-500', estaEditando ? 'icon-[ri--keyboard-line]' : 'icon-[ri--add-circle-line]']"></span>
         {{ estaEditando ? 'Editar Equipo' : 'Agregar Equipo' }}
@@ -179,7 +187,6 @@ const {
 
         <div class="flex flex-col-reverse sm:flex-row gap-3 justify-end w-full">
           <button
-            v-if="estaEditando"
             type="button"
             @click="cancelarEdicion"
             class="w-full sm:w-auto justify-center bg-shark-950/40 border border-shark-800 hover:bg-shark-800 text-white px-6 py-2.5 rounded-lg font-bold transition-all duration-200 cursor-pointer flex items-center gap-1"
@@ -194,5 +201,5 @@ const {
         </div>
       </form>
     </div>
-  </section>
+  </div>
 </template>
